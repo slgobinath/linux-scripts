@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Name:
+#       copythis
+# 
+# Description:
+#       Execute this command from terminal to copy the current path to clipboard.
+#       You can paste the path in text editors or anyware you want using Ctrl + V.
+#
+# Dependencies:
+#       sudo apt-get install xclip
+#
+# Installation:
+#       1. Install all the dependencies
+#       2. Copy and paste the script into ~/bin
+#       3. Make it executable using: chmod +x ~/bin/copythis
+#
+# Manual:
+#       $ copythis
+#       Ctrl + V (anyware you want to paste)
+
+# pwd   -   Returns the current directory path
+# awk   -   Captures the output of pwd and trim the new line
+# xclip -   Copy the output of awk to the clipboard
+pwd | awk '{printf $0}' | xclip -selection clipboard
