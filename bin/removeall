@@ -28,12 +28,12 @@ then
 	echo "Removing all parent level files"
 	perl -e 'for(<*>){((stat)[9]<(unlink))}'
 
-	i=0
-	for d in */ ; do
-		echo "Removing $d"
-		cd $d
-		perl -e 'for(<*>){((stat)[9]<(unlink))}'
-		cd ../
-		rm -rf $d
-	done
+	# i=0
+	# for d in */ ; do
+	# 	echo "Removing $d"
+	# 	cd $d
+	# 	perl -e 'for(<*>){((stat)[9]<(unlink))}'
+	# 	cd ../
+	# 	rm -rf $d
+	# done
 fi
