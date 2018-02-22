@@ -2,7 +2,7 @@
 
 # Name:
 #       removeall
-# 
+#
 # Description:
 #       Delete millions of files from current directory in a fraction of second.
 #
@@ -20,20 +20,22 @@
 
 # Perl script credits: https://unix.stackexchange.com/a/79656/141909
 
-read -p "Are you sure to remove all files in current directory? " -n 1 -r
+
+removedir() {
+    for d in *; do
+        if [ -d "$d" ]; then
+            (cd -- "$d" && removedir)
+            rm -rf $d
+        fi
+    done
+    perl -e 'for(<*>){((stat)[9]<(unlink))}'
+    echo "Removed $PWD/*"
+}
+
+read -p "Are you sure to remove all files in current directory [y/N]? " -n 1 -r
 echo    # Move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-	# Remove al files in current directory
-	echo "Removing all parent level files"
-	perl -e 'for(<*>){((stat)[9]<(unlink))}'
-
-	# i=0
-	# for d in */ ; do
-	# 	echo "Removing $d"
-	# 	cd $d
-	# 	perl -e 'for(<*>){((stat)[9]<(unlink))}'
-	# 	cd ../
-	# 	rm -rf $d
-	# done
+		# Remove current directory recursively
+    (removedir)
 fi
