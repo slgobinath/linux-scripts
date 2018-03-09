@@ -1,0 +1,74 @@
+#! /usr/bin/python3
+
+# Name:
+#       play_youtube
+#
+# Description:
+#       Play Youtube video and playlist using SMPlayer.
+#       SMPlayer can play signle Youtube video but playing a playlist makes navigation hard.
+#       This script append all videos to SMPlayer playlist so it is easy for video navigation.
+#
+# Dependencies:
+#       smplayer, youtube-dl
+#
+# Installation:
+#       1. Install all the dependencies
+#       2. Copy and paste the script into ~/bin
+#       3. Make it executable using: chmod +x ~/bin/play_youtube
+#
+# Manual:
+#       $ play_youtube https://www.youtube.com/playlist?list=PLAC463A2B6B2CEC7F
+
+import subprocess
+import json
+import os
+import time
+import sys
+
+
+def extract(playlist_url):
+    videos = []
+    output = subprocess.check_output(
+        ['youtube-dl', '-j', '--flat-playlist',  playlist_url]).decode('ascii').split("\n")
+
+    index = 0
+    for line in output:
+        line = line.strip()
+        if line:
+            index += 1
+            video = json.loads(line)
+            video_url = 'https://www.youtube.com/watch?v=%s' % video['url']
+            videos.append(video_url)
+    return videos
+
+
+def play(videos):
+    if videos:
+        print("Playing %d videos" % len(videos))
+        subprocess.Popen(['smplayer', '-add-to-playlist', '-close-at-end', videos[0]],
+                         preexec_fn=os.setsid, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(2)   # Give some time to open SMPlayer
+        videos = videos[1:]
+        for url in videos:
+            subprocess.Popen(['smplayer', '-add-to-playlist', '-close-at-end', url],
+                             preexec_fn=os.setsid, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+if __name__ == "__main__":
+    no_of_args = len(sys.argv) - 1
+    if(no_of_args == 1):
+        url = sys.argv[1]
+        videos = None
+        if 'https://www.youtube.com/playlist?list=' in url:
+            # Youtube playlist
+            videos = extract(url)
+        elif 'https://www.youtube.com/watch?v=' in url:
+            # Youtube video
+            videos = [url]
+        else:
+            print('Invalid URL')
+        if videos:
+            play(videos)
+    else:
+        print("expected single argument: Youtube URL but found %d arguments" % no_of_args)
+    sys.exit(0)
