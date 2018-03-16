@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Name:
+#       mv-random
+# 
+# Description:
+#       Move random n files from one location to another
+#
+# Dependencies:
+#       xargs
+#
+# Installation:
+#       1. Install all the dependencies
+#       2. Copy and paste the script into ~/bin
+#       3. Make it executable using: chmod +x ~/bin/mv-random
+#
+# Manual:
+#		$ cd dir_to_remove
+#       $ mv-random <no-of-files> <from-dir> <to-dir>
+
+if [ "$#" -ne 3 ]; then
+  echo "Usage: $0 <no-of-files> <from-dir> <to-dir>" >&2
+  exit 1
+fi
+regex='^[0-9]+$'
+if ! [[ $1 =~ $regex ]] ; then
+   echo "$1 is not a number" >&2;
+   exit 1
+fi
+if ! [ -e "$2" ]; then
+  echo "$2 not found" >&2
+  exit 1
+fi
+if ! [ -d "$2" ]; then
+  echo "$2 is not a directory" >&2
+  exit 1
+fi
+if ! [ -e "$3" ]; then
+  echo "$3 not found" >&2
+  exit 1
+fi
+if ! [ -d "$3" ]; then
+  echo "$3 is not a directory" >&2
+  exit 1
+fi
+
+shuf -n $1 -e $2/* | xargs -i mv {} $3
