@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Name:
+#       copythis
+# 
+# Description:
+#       Execute this command from terminal to blur edge of an image.
+#
+# Dependencies:
+#       sudo apt-get install imagemagick
+#
+# Installation:
+#       1. Install all the dependencies
+#       2. Copy and paste the script into ~/bin
+#       3. Make it executable using: chmod +x ~/bin/blur-edge
+#
+# Manual:
+#       $ blur-edge input.jpg output.png
+
+convert $1 -bordercolor black -fill white \
+   \( -clone 0 -colorize 100 -shave 10x10 -border 10x10 -blur 0x10 \) \
+   -compose copyopacity -composite $2
