@@ -18,5 +18,5 @@
 #       $ blur-edge input.jpg output.png
 
 convert $1 -bordercolor black -fill white \
-   \( -clone 0 -colorize 100 -shave 10x10 -border 10x10 -blur 0x10 \) \
+   \( -clone 0 -colorize 100 -shave 16x16 -border 16x16 -blur 0x8 \) \
    -compose copyopacity -composite $2
